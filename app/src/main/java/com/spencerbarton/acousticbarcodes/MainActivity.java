@@ -1,39 +1,33 @@
 package com.spencerbarton.acousticbarcodes;
 
-import android.support.v7.app.ActionBarActivity;
+import android.app.Activity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.View;
 
+// TODO audio recording
+// TODO decode
+public class MainActivity extends Activity {
 
-public class MainActivity extends ActionBarActivity {
+    private static final int BARCODE_LEN = 8;
+    private static final int[] BARCODE_START_BITS = {1,1};
+    private static final int[] BARCODE_STOP_BITS = {1,0};
+
+    private AcousticBarcodeDecoder mDecoder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mDecoder = new AcousticBarcodeDecoder(BARCODE_LEN, BARCODE_START_BITS, BARCODE_STOP_BITS);
+
     }
 
+    public void onScanClick(View view) {
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+    public void onSettingsClick(View view) {
     }
 }

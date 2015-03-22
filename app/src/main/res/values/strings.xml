@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">AcousticBarcodes</string>
-
-    <string name="hello_world">Hello world!</string>
+    <string name="project_title">Acoustic Barcodes</string>
+    <string name="authors_line">By Spencer Barton &amp; David Lu</string>
+    <string name="class_name">18–551 Spring 2015</string>
+    <string name="barcode_btn_start">Start Scan</string>
+    <string name="barcode_btn_stop">Stop Scan</string>
     <string name="action_settings">Settings</string>
+    <string name="settings">Settings</string>
 </resources>
