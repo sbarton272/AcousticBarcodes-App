@@ -20,7 +20,7 @@ public class AudioRecorder {
     private static final String TAG = "AudioRecorder";
     private static final String ROOT_DIR = "AcousticBarcodes";
     private final Context mContext;
-    private MediaRecorder mRecorder;
+    private ExtAudioRecorder mRecorder;
     private File mFile;
 
     public AudioRecorder(Context context) {
@@ -36,18 +36,9 @@ public class AudioRecorder {
 
     public void startRecording() {
         mFile = newTimeStampAudio();
-        mRecorder = new MediaRecorder();
-        mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        mRecorder = ExtAudioRecorder.getInstance(false);
         mRecorder.setOutputFile(mFile.getAbsolutePath());
-        mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-
-        try {
-            mRecorder.prepare();
-        } catch (IOException e) {
-            Log.e(TAG, "prepare() failed");
-        }
-
+        mRecorder.prepare();
         mRecorder.start();
     }
 
