@@ -47,13 +47,14 @@ public class AcousticBarcodeDecoder {
 
         // TODO debug
         recording = new Wave(mContext.getResources().openRawResource(R.raw.test));
+        Log.i(TAG, recording.toString());
 
         // Prefilter
         double[] data = mPreFilter.filter(recording);
-        ((MainActivity)mContext).drawDebugPlot(data);
 
         // Transient Detection
         double[] transientLocs = mTransientDetector.detect(data);
+        ((MainActivity)mContext).drawDebugPlot(transientLocs);
 
         // Decoding
 

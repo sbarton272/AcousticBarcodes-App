@@ -6,7 +6,6 @@ import com.musicg.wave.Wave;
 import com.musicg.wave.extension.Spectrogram;
 
 import org.apache.commons.math3.stat.StatUtils;
-import org.apache.commons.math3.util.FastMath;
 
 /**
  * Created by Spencer on 4/6/2015.
@@ -15,9 +14,10 @@ public class PreFilter {
 
     private static final String TAG = "PreFilter";
 
-    private static final int LOWEST_FREQ = 10;
-    private static final int FFT_SZ = 256;
+    private static final int LOWEST_FREQ = 3;
+    private static final int FFT_SZ = 16;
     private static final int OVERLAP_FACTOR = 2;
+    private static final double MIN_SPEC_VAL = 0;
     private boolean mNormalize = false;
 
     public double[] filter(Wave recording) {
@@ -43,6 +43,8 @@ public class PreFilter {
         double[] summedSpectrum = new double[data.length];
         for (int i = lowestFreq; i < data.length; i++) {
             summedSpectrum[i] = StatUtils.sum(data[i]);
+            // Value floor
+            summedSpectrum[i] = Math.max(summedSpectrum[i], MIN_SPEC_VAL);
         }
         return summedSpectrum;
     }
@@ -64,12 +66,11 @@ public class PreFilter {
             }
 
             // Stats
-            double mean = StatUtils.mean(spectrum);
-            double std = FastMath.sqrt(StatUtils.variance(spectrum));
+            double max = StatUtils.max(spectrum);
 
             // Apply stats
             for (int time = 0; time < spectrum.length; time++) {
-                data[time][freq] = (data[time][freq] - mean) / std;
+                data[time][freq] = data[time][freq] / max;
             }
         }
         return data;
