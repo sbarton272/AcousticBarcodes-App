@@ -1,6 +1,7 @@
 package com.spencerbarton.acousticbarcodes;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -8,9 +9,18 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.androidplot.xy.LineAndPointFormatter;
+import com.androidplot.xy.PointLabelFormatter;
+import com.androidplot.xy.SimpleXYSeries;
+import com.androidplot.xy.XYPlot;
+import com.androidplot.xy.XYSeries;
 import com.spencerbarton.acousticbarcodes.decoder.AcousticBarcodeDecoder;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import java.io.File;
+import java.util.Arrays;
+import java.util.List;
 
 // TODO audio recording
 // TODO decode
@@ -82,5 +92,32 @@ public class MainActivity extends Activity {
             strRet+=Integer.toString(i);
         }
         return strRet;
+    }
+
+    // From http://androidplot.com/docs/a-simple-xy-plot/
+    public void drawDebugPlot(double[] data) {
+        // initialize our XYPlot reference:
+        XYPlot mySimpleXYPlot = (XYPlot) findViewById(R.id.mySimpleXYPlot);
+
+        // Turn the above arrays into XYSeries':
+        Double[] doubleArray = ArrayUtils.toObject(data);
+        List<Double> vals = Arrays.asList(doubleArray);
+        XYSeries series = new SimpleXYSeries(
+                vals,          // SimpleXYSeries takes a List so turn our array into a List
+                SimpleXYSeries.ArrayFormat.Y_VALS_ONLY, // Y_VALS_ONLY means use the element index as the x value
+                "Debug");                             // Set the display title of the series
+
+        // Create a formatter to use for drawing a series using LineAndPointRenderer:
+        LineAndPointFormatter seriesFormat = new LineAndPointFormatter(
+                Color.rgb(0, 200, 0),                   // line color
+                null,                                   // point color
+                null,                                   // fill color (none)
+                null);                                   // text color
+
+        // add a new series' to the xyplot:
+        mySimpleXYPlot.addSeries(series, seriesFormat);
+
+        // reduce the number of range labels
+        mySimpleXYPlot.setTicksPerRangeLabel(3);
     }
 }

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.musicg.wave.Wave;
+import com.spencerbarton.acousticbarcodes.MainActivity;
 import com.spencerbarton.acousticbarcodes.R;
 
 import java.io.File;
@@ -28,7 +29,8 @@ public class AcousticBarcodeDecoder {
     private int[] mStopBits;
 
     // Components
-    private PreFilter mPreFilter;
+    private final PreFilter mPreFilter;
+    private final TransientDetector mTransientDetector;
 
     public AcousticBarcodeDecoder(Context context, int codeLen, int[] startBits, int[] stopBits) {
         mContext = context;
@@ -36,18 +38,22 @@ public class AcousticBarcodeDecoder {
         mStartBits = startBits;
         mStopBits = stopBits;
         mPreFilter = new PreFilter();
+        mTransientDetector = new TransientDetector();
     }
 
     public int[] decode(File file) {
-        //Wave recording = new Wave(file.getAbsolutePath());
-        Wave recording = new Wave(mContext.getResources().openRawResource(R.raw.test));
-
+        Wave recording = new Wave(file.getAbsolutePath());
         Log.i(TAG, recording.toString());
 
-        // Prefilter (high pass)
+        // TODO debug
+        recording = new Wave(mContext.getResources().openRawResource(R.raw.test));
+
+        // Prefilter
         double[] data = mPreFilter.filter(recording);
+        ((MainActivity)mContext).drawDebugPlot(data);
 
         // Transient Detection
+        double[] transientLocs = mTransientDetector.detect(data);
 
         // Decoding
 
