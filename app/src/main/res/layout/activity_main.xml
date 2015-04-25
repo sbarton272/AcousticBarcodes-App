@@ -72,6 +72,7 @@
         android:layout_alignParentLeft="true"/>
 
     <com.androidplot.xy.XYPlot
+        android:visibility="gone"
         android:id="@+id/mySimpleXYPlot"
         android:layout_alignParentBottom="true"
         android:layout_width="fill_parent"

@@ -66,12 +66,14 @@ public class AcousticBarcodeDecoder {
             return null;
         }
 
+        /*
         // TODO DEBUG plot interesting data
         double[] interestingData = Arrays.copyOfRange(data, transientLocs[0]-20,
                 transientLocs[transientLocs.length-1]+20);
         mActivity.drawDebugPlot(interestingData);
         Log.i(TAG, "Plotted " + interestingData.length);
-        
+        */
+
         // Decoding
         int[] code = mDecoder.decode(transientLocs);
         Log.i(TAG, "Decoder " + Arrays.toString(code));
