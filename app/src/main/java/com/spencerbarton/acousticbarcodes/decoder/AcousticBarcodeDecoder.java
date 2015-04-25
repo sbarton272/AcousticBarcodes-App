@@ -1,16 +1,11 @@
 package com.spencerbarton.acousticbarcodes.decoder;
 
-import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 
 import com.musicg.wave.Wave;
 import com.spencerbarton.acousticbarcodes.MainActivity;
-import com.spencerbarton.acousticbarcodes.R;
 
-import org.apache.commons.math3.stat.StatUtils;
-
-import java.io.Console;
 import java.io.File;
 import java.util.Arrays;
 

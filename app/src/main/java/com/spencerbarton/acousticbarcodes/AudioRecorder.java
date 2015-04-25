@@ -1,12 +1,10 @@
 package com.spencerbarton.acousticbarcodes;
 
 import android.content.Context;
-import android.media.MediaRecorder;
 import android.os.Environment;
 import android.util.Log;
 
 import java.io.File;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
