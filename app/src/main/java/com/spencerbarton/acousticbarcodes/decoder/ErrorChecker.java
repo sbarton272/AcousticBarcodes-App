@@ -14,7 +14,11 @@ public class ErrorChecker {
 		mStopBits = stopBits;
 	}
 
-	public boolean check(int[] code) {
+    public boolean checkTransients(int[] trans) {
+        return trans.length < mCodeLen;
+    }
+
+	public boolean checkCode(int[] code) {
 		// Returns true if there is an error
 		
 		if (code.length != mCodeLen) {
@@ -33,5 +37,4 @@ public class ErrorChecker {
 		
 		return false;
 	}
-	
 }

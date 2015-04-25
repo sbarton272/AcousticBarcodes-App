@@ -1,8 +1,10 @@
 package com.spencerbarton.acousticbarcodes.decoder;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.musicg.wave.Wave;
+import com.spencerbarton.acousticbarcodes.R;
 
 import java.io.Console;
 import java.io.File;
@@ -32,8 +34,10 @@ public class AcousticBarcodeDecoder {
     private final TransientDetector mTransientDetector;
     private final Decoder mDecoder;
     private final ErrorChecker mErrorChecker;
-    
-    public AcousticBarcodeDecoder(int codeLen, int[] startBits, int[] stopBits) {
+    private final Context mContext;
+
+    public AcousticBarcodeDecoder(Context context, int codeLen, int[] startBits, int[] stopBits) {
+        mContext = context;
         mTransform = new Transform();
         mTransientDetector = new TransientDetector();
         mDecoder = new Decoder(ENCODING_UNIT_LEN_ONE, ENCODING_UNIT_LEN_ZERO, startBits, stopBits);
@@ -41,21 +45,27 @@ public class AcousticBarcodeDecoder {
     }
 
     public int[] decode(File file) {
-        Wave recording = new Wave(file.getAbsolutePath());
+        //Wave recording = new Wave(file.getAbsolutePath());
+        Wave recording = new Wave(mContext.getResources().openRawResource(R.raw.test));
 
         // Prefilter
         double[] data = mTransform.filter(recording);
         
         // Transient Detection
         int[] transientLocs = mTransientDetector.detect(data);
+        Log.i(TAG, "Transient Detector " + Arrays.toString(transientLocs));
+
+
+        if (mErrorChecker.checkTransients(transientLocs)) {
+            return null;
+        }
         
         // Decoding
         int[] code = mDecoder.decode(transientLocs);
-        
         Log.i(TAG, "Decoder " + Arrays.toString(code));
 
         // Error Detection
-        if (mErrorChecker.check(code)) {
+        if (mErrorChecker.checkCode(code)) {
         	return null;
         }
 
