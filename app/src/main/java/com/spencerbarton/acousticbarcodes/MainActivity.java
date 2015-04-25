@@ -41,7 +41,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mDecoder = new AcousticBarcodeDecoder(this, BARCODE_LEN, BARCODE_START_BITS, BARCODE_STOP_BITS);
+        mDecoder = new AcousticBarcodeDecoder(BARCODE_LEN, BARCODE_START_BITS, BARCODE_STOP_BITS);
         mRecorder = new AudioRecorder(this);
 
         addScanBtn();
@@ -67,22 +67,29 @@ public class MainActivity extends Activity {
 
     private void startScan() {
         mRecorder.startRecording();
-        setMsg(getString(R.string.scan_btn_recording));
+        setMsg(getString(R.string.scan_btn_recording), false);
     }
 
     private void stopScan() {
         File recording = mRecorder.stopRecording();
         int[] decoded = mDecoder.decode(recording);
-        setMsg("Decoded " + intArrayToString(decoded) + "\n" + getString(R.string.scan_btn_done)
-                + recording.getName());
+        if (decoded == null) {
+            setMsg("Unable to decode", true);
+        } else {
+            setMsg("Decoded " + intArrayToString(decoded) + "\n" + getString(R.string.scan_btn_done)
+                    + recording.getName(), false);
+        }
     }
 
     public void onSettingsClick(View view) {
         Log.i(TAG, "Settings");
     }
 
-    private void setMsg(String msg) {
+    private void setMsg(String msg, boolean errMsg) {
         TextView msgBanner = (TextView) findViewById(R.id.message_banner);
+        if (errMsg) {
+            msgBanner.setTextColor(Color.RED);
+        }
         msgBanner.setText(msg);
     }
 

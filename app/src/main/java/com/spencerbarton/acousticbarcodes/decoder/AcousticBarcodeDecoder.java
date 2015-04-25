@@ -1,16 +1,21 @@
 package com.spencerbarton.acousticbarcodes.decoder;
 
-import android.content.Context;
 import android.util.Log;
 
 import com.musicg.wave.Wave;
-import com.spencerbarton.acousticbarcodes.MainActivity;
-import com.spencerbarton.acousticbarcodes.R;
 
+import java.io.Console;
 import java.io.File;
+import java.util.Arrays;
 
 /**
  * Contains acoustic barcode algorithm
+ * 
+ * TODO consts obj
+ * TODO different decoders
+ * TODO settings control consts
+ * TODO change record btn
+ * TODO check audio works
  *
  * Created by Spencer on 3/22/2015.
  */
@@ -19,48 +24,42 @@ public class AcousticBarcodeDecoder {
     private static final String TAG = "AcousticBarcodeDecoder";
 
     // Consts
-    private static final int ENCODING_UNIT_LEN_ONE = 1;
-    private static final int ENCODING_UNIT_LEN_ZERO = 2;
-    private final Context mContext;
-
-    // Params
-    private int mCodeLen;
-    private int[] mStartBits;
-    private int[] mStopBits;
+    private static final double ENCODING_UNIT_LEN_ONE = 1;
+    private static final double ENCODING_UNIT_LEN_ZERO = 1.8;
 
     // Components
-    private final PreFilter mPreFilter;
+    private final Transform mTransform;
     private final TransientDetector mTransientDetector;
-
-    public AcousticBarcodeDecoder(Context context, int codeLen, int[] startBits, int[] stopBits) {
-        mContext = context;
-        mCodeLen = codeLen;
-        mStartBits = startBits;
-        mStopBits = stopBits;
-        mPreFilter = new PreFilter();
+    private final Decoder mDecoder;
+    private final ErrorChecker mErrorChecker;
+    
+    public AcousticBarcodeDecoder(int codeLen, int[] startBits, int[] stopBits) {
+        mTransform = new Transform();
         mTransientDetector = new TransientDetector();
+        mDecoder = new Decoder(ENCODING_UNIT_LEN_ONE, ENCODING_UNIT_LEN_ZERO, startBits, stopBits);
+        mErrorChecker = new ErrorChecker(codeLen, startBits, stopBits);
     }
 
     public int[] decode(File file) {
         Wave recording = new Wave(file.getAbsolutePath());
-        Log.i(TAG, recording.toString());
-
-        // TODO debug
-        recording = new Wave(mContext.getResources().openRawResource(R.raw.test));
-        Log.i(TAG, recording.toString());
 
         // Prefilter
-        double[] data = mPreFilter.filter(recording);
-
+        double[] data = mTransform.filter(recording);
+        
         // Transient Detection
-        double[] transientLocs = mTransientDetector.detect(data);
-        ((MainActivity)mContext).drawDebugPlot(transientLocs);
-
+        int[] transientLocs = mTransientDetector.detect(data);
+        
         // Decoding
+        int[] code = mDecoder.decode(transientLocs);
+        
+        Log.i(TAG, "Decoder " + Arrays.toString(code));
 
         // Error Detection
+        if (mErrorChecker.check(code)) {
+        	return null;
+        }
 
-        return mStartBits;
+        return code;
     }
 
 }
