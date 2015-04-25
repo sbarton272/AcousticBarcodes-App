@@ -49,8 +49,7 @@ public class TransientDetector {
     	double mean = StatUtils.mean(data);
     	double std = FastMath.sqrt(StatUtils.variance(data));
     	double thresh = mean + std;
-    	System.out.println("Peak mean " + mean + " Peak std " + std);
-    	
+
     	// Iter through and find valid max
     	double val, nextVal, prominence,curMin;
     	for (int i = 0; i < data.length-1; i++) {

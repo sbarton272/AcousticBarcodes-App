@@ -46,10 +46,11 @@
         android:text="@string/barcode_btn_start"
         android:id="@+id/scan_btn"
         android:layout_below="@+id/textView3"
-        android:onClick="onScanClick"
+        android:onClick="onScanBtn"
         android:layout_centerHorizontal="true"
         android:textSize="30dp"
-        android:padding="10dp" />
+        android:padding="10dp"
+        android:nestedScrollingEnabled="true" />
 
     <Button
         android:layout_width="wrap_content"
