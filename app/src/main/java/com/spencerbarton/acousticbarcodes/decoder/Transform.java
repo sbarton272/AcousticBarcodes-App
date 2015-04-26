@@ -1,5 +1,7 @@
 package com.spencerbarton.acousticbarcodes.decoder;
 
+import android.util.Log;
+
 import com.musicg.wave.Wave;
 import com.musicg.wave.extension.Spectrogram;
 
@@ -12,17 +14,20 @@ public class Transform {
 
     private static final String TAG = "Transform";
 
-    private static final int LOWEST_FREQ = 12;
-    private static final int FFT_SZ = 128;
-    private static final int OVERLAP_FACTOR = 3;
+    private static final int LOWEST_FREQ = 6;
+    private static final int FFT_SZ = 64;
+    private static final int OVERLAP_FACTOR = 32;
     private static final double MIN_SPEC_VAL = 0;
     private boolean mNormalize = false;
 
-    public double[] filter(Wave recording) {
+    public double[] transform(Wave recording) {
 
         // Spectrogram
         Spectrogram spectrogram = recording.getSpectrogram(FFT_SZ, OVERLAP_FACTOR);
         double[][] data = spectrogram.getAbsoluteSpectrogramData();
+
+        double r = (double)data.length / recording.size();
+        Log.i(TAG, "Spec samples " + data.length + " freq " + data[0].length + " ratio " + r);
         
         // Normalize to unit normal in each freq
         if (mNormalize) {

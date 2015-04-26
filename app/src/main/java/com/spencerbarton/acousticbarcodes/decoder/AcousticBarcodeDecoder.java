@@ -33,10 +33,13 @@ public class AcousticBarcodeDecoder {
     // Consts
     private static final double ENCODING_UNIT_LEN_ONE = 1;
     private static final double ENCODING_UNIT_LEN_ZERO = 1.8;
-    private static final int VIZ_BUFFER = 20;
+    private static final int FLT_LEN = 5;
+    private static final double FLT_SIGMA = 2;
+    private static final int VIZ_BUFFER = 40;
 
     // Components
     private final Transform mTransform;
+    private final GaussianFilter mFilter = new GaussianFilter(FLT_LEN, FLT_SIGMA);
     private final TransientDetector mTransientDetector;
     private final OnesDecoder mDecoder;
     private final ErrorChecker mErrorChecker;
@@ -54,15 +57,18 @@ public class AcousticBarcodeDecoder {
         Wave recording = new Wave(file.getAbsolutePath());
         Log.i(TAG, recording.toString());
 
-        // Prefilter
-        double[] data = mTransform.filter(recording);
+        // Transform
+        double[] data = mTransform.transform(recording);
+
+        // Filter
+        double[] fltData = mFilter.filter(data);
 
         // Transient Detection
-        int[] transientLocs = mTransientDetector.detect(data);
-        Log.i(TAG, "Transient Detector " + Arrays.toString(transientLocs));
+        int[] transientLocs = mTransientDetector.detect(fltData);
+        Log.i(TAG, "Transient Detector(" + transientLocs.length + ") " + Arrays.toString(transientLocs));
 
         // TODO add debug
-        plotTrans(data, transientLocs);
+        plotTrans(fltData, transientLocs);
 
         if (mErrorChecker.checkTransients(transientLocs)) {
             return null;

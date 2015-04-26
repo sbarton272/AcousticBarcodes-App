@@ -3,6 +3,7 @@ package com.spencerbarton.acousticbarcodes.decoder;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -20,7 +21,7 @@ public class OnesDecoder {
     // Params
 	private double mUnitLenOne;
 	private double mUnitLenZero;
-    private double[] mIterOnsetDelays;
+    private double[] mInterOnsetDelays;
     private double[] mUnitLenAvg;
     private ArrayList<Integer> mDecoded;
     
@@ -33,15 +34,18 @@ public class OnesDecoder {
 	public int[] decode(int[] transientLocs) {
 
 		mDecoded.clear();
-		mIterOnsetDelays = differences(transientLocs);
-		mUnitLenAvg = new double[mIterOnsetDelays.length];
-				
-		int curIndx = findUnitLen();
+		mInterOnsetDelays = differences(transientLocs);
+
+        Log.i(TAG, "InterOnsetDelay " + Arrays.toString(mInterOnsetDelays));
+
+		mUnitLenAvg = new double[mInterOnsetDelays.length];
+
+        int curIndx = findUnitLen();
 		if (curIndx == NO_UNIT_LEN_FOUND) {
 
             // Try in reverse, note nothing yet added to unit len avg
             Log.i(TAG, "Trying reverse");
-            ArrayUtils.reverse(mIterOnsetDelays);
+            ArrayUtils.reverse(mInterOnsetDelays);
             curIndx = findUnitLen();
             if (curIndx == NO_UNIT_LEN_FOUND) {
                 return null;
@@ -49,6 +53,8 @@ public class OnesDecoder {
 		}
 		
 		decodeRemainder(curIndx);
+
+        Log.i(TAG, "UnitLenAvg " + Arrays.toString(mUnitLenAvg));
 		
 		Integer[] decoded = mDecoded.toArray(new Integer[mDecoded.size()]);
 		return ArrayUtils.toPrimitive(decoded);
@@ -62,10 +68,10 @@ public class OnesDecoder {
         double curDelay, nextDelay, unitLen;
 
         // Search for start bits up until end bits location
-        int maxSearchLoc = mIterOnsetDelays.length - START_BITS.length - 1;
+        int maxSearchLoc = mInterOnsetDelays.length - START_BITS.length - 1;
         for (int i = 0; i < maxSearchLoc; i++) {
-            curDelay = mIterOnsetDelays[i];
-            nextDelay = mIterOnsetDelays[i+1];
+            curDelay = mInterOnsetDelays[i];
+            nextDelay = mInterOnsetDelays[i+1];
 
             // Once find [1,1] start code, save and return
             // Note assumes will find at the beginning
@@ -91,8 +97,8 @@ public class OnesDecoder {
 		double unitLen = mUnitLenAvg[curIndx - 1];
 				
 		// Iterate through remaining delays and decode
-		for (int i = curIndx; i < mIterOnsetDelays.length; i++) {
-			curDelay = mIterOnsetDelays[i] + addPrevDelay;
+		for (int i = curIndx; i < mInterOnsetDelays.length; i++) {
+			curDelay = mInterOnsetDelays[i] + addPrevDelay;
 			
 			// Don't add to next delay unless not decoded  
 			addPrevDelay = 0;
@@ -161,7 +167,7 @@ public class OnesDecoder {
     }
 
     public double[] getInterOnsetDelays() {
-        return mIterOnsetDelays;
+        return mInterOnsetDelays;
     }
 	
 }

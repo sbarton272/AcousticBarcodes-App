@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.androidplot.xy.BoundaryMode;
 import com.androidplot.xy.LineAndPointFormatter;
 import com.androidplot.xy.SimpleXYSeries;
 import com.androidplot.xy.XYPlot;
@@ -164,7 +165,7 @@ public class MainActivity extends ActionBarActivity {
         plot.addSeries(series, seriesFormat);
 
         plot.setTicksPerRangeLabel(3);
-        plot.setRangeBottomMin(0);
+        plot.setRangeLowerBoundary(0, BoundaryMode.FIXED);
 
         plot.redraw();
     }

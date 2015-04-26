@@ -16,24 +16,13 @@ import org.apache.commons.math3.util.FastMath;
 public class TransientDetector {
     private static final String TAG = "TransientDetector";
 
-    private static final int FLT_LEN = 8;
-    private static final double FLT_SIGMA = 2;
 	private static final double PEAK_SCALE = 0.5;
 	private static final double THRESH_SCALE = 1.0;
 
-    private final GaussianFilter mGaussFlt = new GaussianFilter(FLT_LEN, FLT_SIGMA);;
-
     public int[] detect(double[] data) {
 
-        // Lowpass filter
-        double[] fltData = mGaussFlt.filter(data);
-        
         // Find transient peaks
-        int[] peaks = findPeaks(fltData);
-        
-        Log.i(TAG, "Peaks(" + peaks.length + ") " + Arrays.toString(peaks));
-        
-        return peaks;
+        return findPeaks(data);
     }
 
     private int[] findPeaks(double[] data) {
