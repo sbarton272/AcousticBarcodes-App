@@ -79,7 +79,6 @@ public class MainActivity extends ActionBarActivity {
 
     private void startScan() {
         mRecorder.startRecording();
-        setMsg(getString(R.string.scan_btn_recording), false);
         setBtn("Recording", true);
     }
 
