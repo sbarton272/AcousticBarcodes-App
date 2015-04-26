@@ -1,11 +1,10 @@
 package com.spencerbarton.acousticbarcodes.decoder;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import org.apache.commons.lang3.ArrayUtils;
 
-public class Decoder {
+public class OnesDecoder {
 
 	// Consts
 	private static final int NO_UNIT_LEN_FOUND = -1;
@@ -13,45 +12,48 @@ public class Decoder {
 	private static final Integer ZERO = 0;
 	private static final double PROPORTION_THRESH = 1.5;
 	private static final double[] UNIT_LEN_W = {.2, .8};
-	
+    private int[] START_BITS = {1, 1};
+
     // Params
 	private double mUnitLenOne;
 	private double mUnitLenZero;
-    private int[] mStartBits = {1, 1};
-    private int[] mStopBits;
+    private int[] mIterOnsetDelays;
     
     private double[] mUnitLenAvg;
     private ArrayList<Integer> mDecoded;
     
-	public Decoder(double unitLenOne, double unitLenZero, int[] startBits, int[] stopBits) {
+	public OnesDecoder(double unitLenOne, double unitLenZero) {
 		mUnitLenOne = unitLenOne;
 		mUnitLenZero = unitLenZero;
-        mStopBits = stopBits;
         mDecoded = new ArrayList<>();
     }
 
 	public int[] decode(int[] transientLocs) {
-		
-		// TODO interonset delays member var
-		
+
 		mDecoded.clear();
-		int[] interOnsetDelays = differences(transientLocs);
-		
-		mUnitLenAvg = new double[interOnsetDelays.length];
+		mIterOnsetDelays = differences(transientLocs);
+		mUnitLenAvg = new double[mIterOnsetDelays.length];
 				
-		// TODO handle reverse
-		int curIndx = findUnitLen(interOnsetDelays);
+		int curIndx = findUnitLen();
 		if (curIndx == NO_UNIT_LEN_FOUND) {
-			return null;
+
+            // Try in reverse, note nothing yet added to unit len avg
+            ArrayUtils.reverse(mIterOnsetDelays);
+            curIndx = findUnitLen();
+            if (curIndx == NO_UNIT_LEN_FOUND) {
+                return null;
+            }
 		}
 		
-		decodeRemainder(interOnsetDelays, curIndx);
+		decodeRemainder(curIndx);
 		
 		Integer[] decoded = mDecoded.toArray(new Integer[mDecoded.size()]);
 		return ArrayUtils.toPrimitive(decoded);
 	}
 
-	private void decodeRemainder(int[] interOnsetDelays, int curIndx) {
+    //------------------------------------------------------
+
+	private void decodeRemainder(int curIndx) {
 		int addPrevDelay = 0;
 		int curDelay;
 		double oneLen, zeroLen, oneDist, zeroDist, curUnitLen;
@@ -60,8 +62,8 @@ public class Decoder {
 		double unitLen = mUnitLenAvg[curIndx - 1];
 				
 		// Iterate through remaining delays and decode
-		for (int i = curIndx; i < interOnsetDelays.length; i++) {
-			curDelay = interOnsetDelays[i] + addPrevDelay;
+		for (int i = curIndx; i < mIterOnsetDelays.length; i++) {
+			curDelay = mIterOnsetDelays[i] + addPrevDelay;
 			
 			// Don't add to next delay unless not decoded  
 			addPrevDelay = 0;
@@ -89,9 +91,11 @@ public class Decoder {
 				
 				// Did not detect a valid delay, so assume echo and
 				//  add to next delay instead of counting
-				// TODO ignore if too large, only add smaller
-				addPrevDelay = curDelay;
-				continue;
+				//  Ignore if too large, only add smaller
+                if (curDelay < oneDist) {
+                    addPrevDelay = curDelay;
+                }
+                continue;
 			}
 			
 			// Update unit len
@@ -100,14 +104,14 @@ public class Decoder {
 		}		
 	}
 
-	private int findUnitLen(int[] interOnsetDelays) {
+	private int findUnitLen() {
 		// Search for start bits to get unit len
 		
 		int curDelay, nextDelay;
 		double unitLen;
-		for (int i = 0; i < interOnsetDelays.length-1; i++) {
-			curDelay = interOnsetDelays[i];
-			nextDelay = interOnsetDelays[i+1];
+		for (int i = 0; i < mIterOnsetDelays.length-1; i++) {
+			curDelay = mIterOnsetDelays[i];
+			nextDelay = mIterOnsetDelays[i+1];
 			
 			// Once find [1,1] start code, save and return
 			// Note assumes will find at the beginning
@@ -115,13 +119,13 @@ public class Decoder {
 				unitLen = calcUnitLen(curDelay, nextDelay);
 				mUnitLenAvg[i] = curDelay;
 				mUnitLenAvg[i+1] = unitLen;
-				for (int b : mStartBits) { mDecoded.add(b); }
+				for (int b : START_BITS) { mDecoded.add(b); }
 				
 				// Return next index
 				return i+2;
 			}
 		}
-		
+
 		return NO_UNIT_LEN_FOUND;
 	}
 

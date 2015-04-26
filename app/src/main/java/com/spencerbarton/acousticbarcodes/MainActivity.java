@@ -20,10 +20,6 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
-// TODO audio recording
-// TODO decode
-// TODO hit btn to start, hit btn to stop
-// TODO another threas
 public class MainActivity extends Activity {
 
     private static final String TAG = "MainActivity";

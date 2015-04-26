@@ -20,9 +20,9 @@ import java.util.Arrays;
  * TODO consts obj
  * TODO different decoders
  * TODO settings control consts
- * TODO change record btn
- * TODO check audio works
  * TODO not save file
+ * TODO Save to local storage temp
+ * TODO another thread
  *
  * Created by Spencer on 3/22/2015.
  */
@@ -37,7 +37,7 @@ public class AcousticBarcodeDecoder {
     // Components
     private final Transform mTransform;
     private final TransientDetector mTransientDetector;
-    private final Decoder mDecoder;
+    private final OnesDecoder mDecoder;
     private final ErrorChecker mErrorChecker;
     private final Context mContext;
     private final MainActivity mActivity;
@@ -47,7 +47,7 @@ public class AcousticBarcodeDecoder {
         mActivity = activity;
         mTransform = new Transform();
         mTransientDetector = new TransientDetector();
-        mDecoder = new Decoder(ENCODING_UNIT_LEN_ONE, ENCODING_UNIT_LEN_ZERO, startBits, stopBits);
+        mDecoder = new OnesDecoder(ENCODING_UNIT_LEN_ONE, ENCODING_UNIT_LEN_ZERO);
         mErrorChecker = new ErrorChecker(codeLen, startBits, stopBits);
     }
 
@@ -70,8 +70,7 @@ public class AcousticBarcodeDecoder {
         double[] interestingData = Arrays.copyOfRange(data, transientLocs[0]-20,
                 transientLocs[transientLocs.length-1]+20);
         mActivity.drawDebugPlot(interestingData);
-        Log.i(TAG, "Plotted " + interestingData.length);
-        
+
         // Decoding
         int[] code = mDecoder.decode(transientLocs);
         Log.i(TAG, "Decoder " + Arrays.toString(code));

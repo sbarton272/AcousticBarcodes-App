@@ -51,7 +51,6 @@ public class AudioRecorder {
     }
 
     private File newTimeStampAudio() {
-        // TODO handle if no SD card
         File path = new File(Environment.getExternalStorageDirectory(), ROOT_DIR);
         if (!path.exists() && !path.mkdirs()) {
             // Did not exist and could not create
