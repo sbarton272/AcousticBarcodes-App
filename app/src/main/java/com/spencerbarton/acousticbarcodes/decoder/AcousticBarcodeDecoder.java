@@ -23,6 +23,8 @@ import java.util.Arrays;
  * TODO not save file
  * TODO Save to local storage temp
  * TODO another thread
+ * TODO more robust decoder
+ * TODO mic settings
  *
  * Created by Spencer on 3/22/2015.
  */
