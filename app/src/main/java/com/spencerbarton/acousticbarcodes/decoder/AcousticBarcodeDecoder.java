@@ -33,17 +33,16 @@ public class AcousticBarcodeDecoder {
     // Consts
     private static final double ENCODING_UNIT_LEN_ONE = 1;
     private static final double ENCODING_UNIT_LEN_ZERO = 1.8;
+    private static final int VIZ_BUFFER = 20;
 
     // Components
     private final Transform mTransform;
     private final TransientDetector mTransientDetector;
     private final OnesDecoder mDecoder;
     private final ErrorChecker mErrorChecker;
-    private final Context mContext;
     private final MainActivity mActivity;
 
-    public AcousticBarcodeDecoder(Context context, MainActivity activity, int codeLen, int[] startBits, int[] stopBits) {
-        mContext = context;
+    public AcousticBarcodeDecoder(MainActivity activity, int codeLen, int[] startBits, int[] stopBits) {
         mActivity = activity;
         mTransform = new Transform();
         mTransientDetector = new TransientDetector();
@@ -67,8 +66,8 @@ public class AcousticBarcodeDecoder {
         }
 
         // TODO DEBUG plot interesting data
-        double[] interestingData = Arrays.copyOfRange(data, transientLocs[0]-20,
-                transientLocs[transientLocs.length-1]+20);
+        double[] interestingData = Arrays.copyOfRange(data, transientLocs[0]-VIZ_BUFFER,
+                transientLocs[transientLocs.length-1]+VIZ_BUFFER);
         mActivity.drawDebugPlot(interestingData);
 
         // Decoding

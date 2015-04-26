@@ -24,9 +24,9 @@ public class MainActivity extends Activity {
 
     private static final String TAG = "MainActivity";
 
-    private static final int BARCODE_LEN = 10;
+    private static final int BARCODE_LEN = 7;
     private static final int[] BARCODE_START_BITS = {1,1};
-    private static final int[] BARCODE_STOP_BITS = {1,1};
+    private static final int[] BARCODE_STOP_BITS = {0,1};
 
     private boolean mRecording = false;
 
@@ -38,7 +38,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mDecoder = new AcousticBarcodeDecoder(this, this, BARCODE_LEN, BARCODE_START_BITS, BARCODE_STOP_BITS);
+        mDecoder = new AcousticBarcodeDecoder(this, BARCODE_LEN, BARCODE_START_BITS, BARCODE_STOP_BITS);
         mRecorder = new AudioRecorder(this);
     }
 
