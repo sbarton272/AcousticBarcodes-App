@@ -1,11 +1,9 @@
 package com.spencerbarton.acousticbarcodes;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,8 +27,8 @@ public class MainActivity extends ActionBarActivity {
     private static final String TAG = "MainActivity";
 
     private static final int BARCODE_LEN = 7;
-    private static final int[] BARCODE_START_BITS = {1,1};
-    private static final int[] BARCODE_STOP_BITS = {0,1};
+    private static final int[] BARCODE_START_BITS = {1, 1};
+    private static final int[] BARCODE_STOP_BITS = {0, 1};
 
     private boolean mRecording = false;
 
@@ -44,6 +42,7 @@ public class MainActivity extends ActionBarActivity {
 
         mDecoder = new AcousticBarcodeDecoder(this, BARCODE_LEN, BARCODE_START_BITS, BARCODE_STOP_BITS);
         mRecorder = new AudioRecorder(this);
+
     }
 
     @Override
@@ -55,7 +54,7 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId()) {
+        switch (item.getItemId()) {
             case R.id.action_settings:
                 Intent intent = new Intent(this, SettingsActivity.class);
                 startActivity(intent);
@@ -95,9 +94,9 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private String intArrayToString(int[] array) {
-        String strRet="";
-        for(int i : array) {
-            strRet+=Integer.toString(i);
+        String strRet = "";
+        for (int i : array) {
+            strRet += Integer.toString(i);
         }
         return strRet;
     }
@@ -127,10 +126,24 @@ public class MainActivity extends ActionBarActivity {
     //=================================================
 
     // From http://android1plot.com/docs/a-simple-xy-plot/
-    public void drawDebugPlot(double[] data) {
-        // initialize our XYPlot reference:
-        XYPlot mySimpleXYPlot = (XYPlot) findViewById(R.id.plot_1);
-        mySimpleXYPlot.clear();
+    public void drawDebugPlot(double[] data, int plotNum) {
+
+        XYPlot plot;
+        switch (plotNum) {
+            case 1:
+                plot = (XYPlot) findViewById(R.id.plot_1);
+                break;
+            case 2:
+                plot = (XYPlot) findViewById(R.id.plot_2);
+                break;
+            case 3:
+                plot = (XYPlot) findViewById(R.id.plot_3);
+                break;
+            default:
+                plot = (XYPlot) findViewById(R.id.plot_1);
+        }
+
+        plot.clear();
 
         // Turn the above arrays into XYSeries':
         Double[] doubleArray = ArrayUtils.toObject(data);
@@ -148,9 +161,11 @@ public class MainActivity extends ActionBarActivity {
                 null);                                   // text color
 
         // add a new series' to the xyplot:
-        mySimpleXYPlot.addSeries(series, seriesFormat);
+        plot.addSeries(series, seriesFormat);
 
-        // reduce the number of range labels
-        mySimpleXYPlot.setTicksPerRangeLabel(3);
+        plot.setTicksPerRangeLabel(3);
+        plot.setRangeBottomMin(0);
+
+        plot.redraw();
     }
 }

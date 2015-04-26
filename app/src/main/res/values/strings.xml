@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AcousticBarcodes</string>
+    <string name="app_name">Acoustic Barcodes</string>
     <string name="title_activity_main">Acoustic Barcodes</string>
     <string name="project_title">Acoustic Barcodes</string>
     <string name="authors_line">By Spencer Barton &amp; David Lu</string>

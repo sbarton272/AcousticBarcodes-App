@@ -20,8 +20,7 @@ public class OnesDecoder {
     // Params
 	private double mUnitLenOne;
 	private double mUnitLenZero;
-    private int[] mIterOnsetDelays;
-    
+    private double[] mIterOnsetDelays;
     private double[] mUnitLenAvg;
     private ArrayList<Integer> mDecoded;
     
@@ -57,12 +56,10 @@ public class OnesDecoder {
 
     //------------------------------------------------------
 
-
     private int findUnitLen() {
         // Search for start bits to get unit len
 
-        int curDelay, nextDelay;
-        double unitLen;
+        double curDelay, nextDelay, unitLen;
 
         // Search for start bits up until end bits location
         int maxSearchLoc = mIterOnsetDelays.length - START_BITS.length - 1;
@@ -87,9 +84,8 @@ public class OnesDecoder {
     }
 
 	private void decodeRemainder(int curIndx) {
-		int addPrevDelay = 0;
-		int curDelay;
-		double oneLen, zeroLen, oneDist, zeroDist, curUnitLen;
+		double addPrevDelay = 0.0;
+		double curDelay, oneLen, zeroLen, oneDist, zeroDist, curUnitLen;
 		
 		// Start with unit len from decoded start bits
 		double unitLen = mUnitLenAvg[curIndx - 1];
@@ -137,10 +133,10 @@ public class OnesDecoder {
 		}		
 	}
 
-	private int[] differences(int[] transientLocs) {
-		int[] diffs = new int[transientLocs.length-1];
+	private double[] differences(int[] transientLocs) {
+		double[] diffs = new double[transientLocs.length-1];
 		for (int i = 0; i < diffs.length; i++) {
-			diffs[i] = transientLocs[i+1] - transientLocs[i];
+			diffs[i] = (double)(transientLocs[i+1] - transientLocs[i]);
 		}
 		return diffs;
 	}
@@ -156,5 +152,16 @@ public class OnesDecoder {
 		}
 		return false;
 	}
+
+
+    //-----------------------------------------------
+
+    public double[] getUnitLenAvg() {
+        return mUnitLenAvg;
+    }
+
+    public double[] getInterOnsetDelays() {
+        return mIterOnsetDelays;
+    }
 	
 }

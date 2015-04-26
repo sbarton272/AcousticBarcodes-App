@@ -44,8 +44,7 @@ public class TransientDetector {
     	double lastMax = 0;
     	double lastMin = 0;
     	int lastMaxI = 0;
-    	double[] peaks = new double[data.length];
-    	
+
     	double mean = StatUtils.mean(data);
     	double std = FastMath.sqrt(StatUtils.variance(data));
     	double thresh = mean + std;
@@ -55,9 +54,6 @@ public class TransientDetector {
     	for (int i = 0; i < data.length-1; i++) {
     		val = data[i];
     		nextVal = data[i+1];
-    		
-    		// Set default to no peak
-    		peaks[i] = 0;
     		
     		if (isRising && (val > nextVal)) {
     			
@@ -77,7 +73,6 @@ public class TransientDetector {
     			
     			// Prominence much be large enough as well as the peak must be larger than the mean
     			if ((lastMax > thresh*THRESH_SCALE) && (prominence > lastMax*PEAK_SCALE)) {
-    				peaks[lastMaxI] = 1;
     				peakLocs.add(lastMaxI);
     			}
     			

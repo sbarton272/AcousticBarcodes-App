@@ -61,18 +61,22 @@ public class AcousticBarcodeDecoder {
         int[] transientLocs = mTransientDetector.detect(data);
         Log.i(TAG, "Transient Detector " + Arrays.toString(transientLocs));
 
+        // TODO add debug
+        plotTrans(data, transientLocs);
+
         if (mErrorChecker.checkTransients(transientLocs)) {
             return null;
         }
 
-        // TODO DEBUG plot interesting data
-        double[] interestingData = Arrays.copyOfRange(data, transientLocs[0]-VIZ_BUFFER,
-                transientLocs[transientLocs.length-1]+VIZ_BUFFER);
-        mActivity.drawDebugPlot(interestingData);
-
         // Decoding
         int[] code = mDecoder.decode(transientLocs);
         Log.i(TAG, "Decoder " + Arrays.toString(code));
+
+        // TODO add debug
+        mActivity.drawDebugPlot(mDecoder.getInterOnsetDelays(), 2);
+
+        // TODO add debug
+        mActivity.drawDebugPlot(mDecoder.getUnitLenAvg(), 3);
 
         // Error Detection
         if (mErrorChecker.checkCode(code)) {
@@ -80,6 +84,14 @@ public class AcousticBarcodeDecoder {
         }
 
         return code;
+    }
+
+    private void plotTrans(double[] data, int[] vals) {
+        if (vals != null && vals.length > 0) {
+            double[] interestingData = Arrays.copyOfRange(data, vals[0] - VIZ_BUFFER,
+                    vals[vals.length - 1] + VIZ_BUFFER);
+            mActivity.drawDebugPlot(interestingData, 1);
+        }
     }
 
 }
