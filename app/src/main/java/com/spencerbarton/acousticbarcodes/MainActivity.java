@@ -1,9 +1,13 @@
 package com.spencerbarton.acousticbarcodes;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -20,7 +24,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
-public class MainActivity extends Activity {
+public class MainActivity extends ActionBarActivity {
 
     private static final String TAG = "MainActivity";
 
@@ -42,11 +46,26 @@ public class MainActivity extends Activity {
         mRecorder = new AudioRecorder(this);
     }
 
-    //=================================================
-
-    public void onSettingsClick(View view) {
-        Log.i(TAG, "Settings");
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return super.onCreateOptionsMenu(menu);
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case R.id.action_settings:
+                Intent intent = new Intent(this, SettingsActivity.class);
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    //=================================================
 
     public void onScanBtn(View view) {
         if (!mRecording) {
@@ -61,7 +80,7 @@ public class MainActivity extends Activity {
     private void startScan() {
         mRecorder.startRecording();
         setMsg(getString(R.string.scan_btn_recording), false);
-        setBtn("Scanning", true);
+        setBtn("Recording", true);
     }
 
     private void stopScan() {
@@ -108,10 +127,10 @@ public class MainActivity extends Activity {
 
     //=================================================
 
-    // From http://androidplot.com/docs/a-simple-xy-plot/
+    // From http://android1plot.com/docs/a-simple-xy-plot/
     public void drawDebugPlot(double[] data) {
         // initialize our XYPlot reference:
-        XYPlot mySimpleXYPlot = (XYPlot) findViewById(R.id.mySimpleXYPlot);
+        XYPlot mySimpleXYPlot = (XYPlot) findViewById(R.id.plot_1);
         mySimpleXYPlot.clear();
 
         // Turn the above arrays into XYSeries':
