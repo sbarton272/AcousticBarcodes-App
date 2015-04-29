@@ -84,6 +84,7 @@ public class MainActivity extends ActionBarActivity {
 
     private void stopScan() {
         File recording = mRecorder.stopRecording();
+        setBtn("Processing", false);
         int[] decoded = mDecoder.decode(recording);
         if (decoded == null) {
             setMsg("Unable to decode", true);
@@ -125,6 +126,24 @@ public class MainActivity extends ActionBarActivity {
     }
 
     //=================================================
+
+    public void setDebugText(String msg, int msgNum) {
+        TextView textView;;
+        switch (msgNum) {
+            case 1:
+                textView = (TextView) findViewById(R.id.text_1);
+                break;
+            case 2:
+                textView = (TextView) findViewById(R.id.text_2);
+                break;
+            case 3:
+                textView = (TextView) findViewById(R.id.text_3);
+                break;
+            default:
+                textView = (TextView) findViewById(R.id.text_1);
+        }
+        textView.setText(msg);
+    }
 
     // From http://android1plot.com/docs/a-simple-xy-plot/
     public void drawDebugPlot(double[] data, int plotNum) {

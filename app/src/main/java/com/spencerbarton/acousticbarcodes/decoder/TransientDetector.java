@@ -36,7 +36,8 @@ public class TransientDetector {
 
     	double mean = StatUtils.mean(data);
     	double std = FastMath.sqrt(StatUtils.variance(data));
-    	double thresh = mean + std;
+    	double thresh = mean + 2*std;
+        Log.i(TAG, "Thresh " + thresh);
 
     	// Iter through and find valid max
     	double val, nextVal, prominence,curMin;

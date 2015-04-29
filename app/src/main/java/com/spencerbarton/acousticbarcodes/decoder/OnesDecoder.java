@@ -126,10 +126,7 @@ public class OnesDecoder {
 				
 				// Did not detect a valid delay, so assume echo and
 				//  add to next delay instead of counting
-				//  Ignore if too large, only add smaller
-                if (curDelay < oneDist) {
-                    addPrevDelay = curDelay;
-                }
+                addPrevDelay = curDelay;
                 continue;
 			}
 			

@@ -25,6 +25,9 @@ import java.util.Arrays;
  * TODO another thread
  * TODO more robust decoder
  * TODO mic settings
+ * TODO better unit len detection
+ * TODO removed dont add dist if not an echo
+ * TODO better numbers on where fails (print to screen)
  *
  * Created by Spencer on 3/22/2015.
  */
@@ -35,9 +38,13 @@ public class AcousticBarcodeDecoder {
     // Consts
     private static final double ENCODING_UNIT_LEN_ONE = 1;
     private static final double ENCODING_UNIT_LEN_ZERO = 1.8;
-    private static final int FLT_LEN = 5;
-    private static final double FLT_SIGMA = 2;
+    private static final int FLT_LEN = 10;
+    private static final double FLT_SIGMA = 4;
     private static final int VIZ_BUFFER = 40;
+
+    private final int[] mStartCode;
+    private final int[] mStopCode;
+    private int mCodeLen;
 
     // Components
     private final Transform mTransform;
@@ -48,6 +55,9 @@ public class AcousticBarcodeDecoder {
     private final MainActivity mActivity;
 
     public AcousticBarcodeDecoder(MainActivity activity, int codeLen, int[] startBits, int[] stopBits) {
+        mCodeLen = codeLen;
+        mStartCode = startBits;
+        mStopCode = stopBits;
         mActivity = activity;
         mTransform = new Transform();
         mTransientDetector = new TransientDetector();
@@ -67,18 +77,23 @@ public class AcousticBarcodeDecoder {
 
         // Transient Detection
         int[] transientLocs = mTransientDetector.detect(fltData);
-        Log.i(TAG, "Transient Detector(" + transientLocs.length + ") " + Arrays.toString(transientLocs));
+        String msg = "Transient Detector(" + transientLocs.length + ") " + Arrays.toString(transientLocs);
+        Log.i(TAG, msg);
+        mActivity.setDebugText(msg, 1);
 
         // TODO add debug
         plotTrans(fltData, transientLocs);
 
         if (mErrorChecker.checkTransients(transientLocs)) {
+            mActivity.setDebugText("Not enough transients needed " + mCodeLen, 2);
             return null;
         }
 
         // Decoding
         int[] code = mDecoder.decode(transientLocs);
-        Log.i(TAG, "Decoder " + Arrays.toString(code));
+        msg = "Decoder " + Arrays.toString(code);
+        Log.i(TAG, msg);
+        mActivity.setDebugText(msg, 2);
 
         // TODO add debug
         mActivity.drawDebugPlot(mDecoder.getInterOnsetDelays(), 2);
@@ -86,8 +101,11 @@ public class AcousticBarcodeDecoder {
         // TODO add debug
         mActivity.drawDebugPlot(mDecoder.getUnitLenAvg(), 3);
 
+        mActivity.setDebugText("Settings CodeLen:" + mCodeLen + " StartCode " + mStartCode + " StopCode " + mStopCode, 3);
+
         // Error Detection
         if (mErrorChecker.checkCode(code)) {
+            mActivity.setDebugText("Error at final stage", 3);
         	return null;
         }
 
