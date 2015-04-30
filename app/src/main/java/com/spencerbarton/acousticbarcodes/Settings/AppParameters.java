@@ -43,7 +43,10 @@ public class AppParameters {
     }
 
     public int getCodeLen() {
-        return mSharedPref.getInt(KEY_CODE_LEN,1);
+        int len = getIntPref(KEY_CODE_LEN);
+        len += getStartBits().length;
+        len += getStopBits().length;
+        return len;
     }
 
     public int[] getStartBits() {
@@ -66,22 +69,26 @@ public class AppParameters {
     }
 
     public int getSpecLow() {
-        return mSharedPref.getInt(KEY_SPEC_LOW, 1);
+        return getIntPref(KEY_SPEC_LOW);
     }
 
     public int getSpecFft() {
-        return mSharedPref.getInt(KEY_SPEC_FFT, 1);
+        return getIntPref(KEY_SPEC_FFT);
     }
 
     public int getSpecOverlap() {
-        return mSharedPref.getInt(KEY_SPEC_OVERLAP, 1);
+        return getIntPref(KEY_SPEC_OVERLAP);
     }
 
     public int getFltLen() {
-        return mSharedPref.getInt(KEY_FLT_LEN, 1);
+        return getIntPref(KEY_FLT_LEN);
     }
 
     public int getFltSigma() {
-        return mSharedPref.getInt(KEY_FLT_SIGMA, 1);
+        return getIntPref(KEY_FLT_SIGMA);
+    }
+
+    private int getIntPref(String key) {
+        return Integer.parseInt(mSharedPref.getString(key, "1"));
     }
 }

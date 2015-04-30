@@ -8,6 +8,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.androidplot.xy.BoundaryMode;
@@ -39,8 +40,14 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mDecoder = new AcousticBarcodeDecoder(this, new AppParameters(this));
+        AppParameters params = new AppParameters(this);
+        mDecoder = new AcousticBarcodeDecoder(this, params);
         mRecorder = new AudioRecorder(this);
+
+        if (!params.getDebug()) {
+            ScrollView debugView = (ScrollView) findViewById(R.id.scrollView);
+            debugView.setVisibility(View.INVISIBLE);
+        }
     }
 
     @Override
@@ -86,8 +93,7 @@ public class MainActivity extends ActionBarActivity {
         if (decoded == null) {
             setMsg("Unable to decode", true);
         } else {
-            setMsg("Decoded " + intArrayToString(decoded) + "\n" + getString(R.string.scan_btn_done)
-                    + recording.getName(), false);
+            setMsg("Decoded " + intArrayToString(decoded), false);
         }
         setBtn(getString(R.string.barcode_btn_start), false);
     }

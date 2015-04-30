@@ -44,6 +44,7 @@ public class AcousticBarcodeDecoder {
     private final int[] mStartCode;
     private final int[] mStopCode;
     private int mCodeLen;
+    private boolean mDebug;
 
     // Components
     private final Transform mTransform;
@@ -58,6 +59,7 @@ public class AcousticBarcodeDecoder {
         mStartCode = params.getStartBits();
         mStopCode = params.getStopBits();
         mActivity = activity;
+        mDebug = params.getDebug();
         mTransform = new Transform(params.getSpecFft(), params.getSpecOverlap(), params.getSpecLow());
         mFilter = new GaussianFilter(params.getFltLen(), params.getFltSigma());
         mTransientDetector = new TransientDetector();
@@ -81,11 +83,14 @@ public class AcousticBarcodeDecoder {
         Log.i(TAG, msg);
         mActivity.setDebugText(msg, 1);
 
-        // TODO add debug
-        plotTrans(fltData, transientLocs);
+        if (mDebug) {
+            plotTrans(fltData, transientLocs);
+        }
 
         if (mErrorChecker.checkTransients(transientLocs)) {
-            mActivity.setDebugText("Not enough transients needed " + mCodeLen, 2);
+            if (mDebug) {
+                mActivity.setDebugText("Not enough transients needed " + mCodeLen, 2);
+            }
             return null;
         }
 
@@ -93,19 +98,20 @@ public class AcousticBarcodeDecoder {
         int[] code = mDecoder.decode(transientLocs);
         msg = "Decoder " + Arrays.toString(code);
         Log.i(TAG, msg);
-        mActivity.setDebugText(msg, 2);
 
-        // TODO add debug
-        mActivity.drawDebugPlot(mDecoder.getInterOnsetDelays(), 2);
-
-        // TODO add debug
-        mActivity.drawDebugPlot(mDecoder.getUnitLenAvg(), 3);
-
-        mActivity.setDebugText("Settings CodeLen:" + mCodeLen + " StartCode " + mStartCode + " StopCode " + mStopCode, 3);
+        if (mDebug) {
+            mActivity.setDebugText(msg, 2);
+            mActivity.drawDebugPlot(mDecoder.getInterOnsetDelays(), 2);
+            mActivity.drawDebugPlot(mDecoder.getUnitLenAvg(), 3);
+            mActivity.setDebugText("Settings CodeLen:" + mCodeLen + " StartCode " +
+                    Arrays.toString(mStartCode) + " StopCode " + Arrays.toString(mStopCode), 3);
+        }
 
         // Error Detection
         if (mErrorChecker.checkCode(code)) {
-            mActivity.setDebugText("Error at final stage", 3);
+            if (mDebug) {
+                mActivity.setDebugText("Error at final stage", 3);
+            }
         	return null;
         }
 
