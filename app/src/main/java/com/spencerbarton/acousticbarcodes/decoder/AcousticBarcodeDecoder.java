@@ -100,11 +100,9 @@ public class AcousticBarcodeDecoder {
         Log.i(TAG, msg);
 
         if (mDebug) {
-            mActivity.setDebugText(msg, 2);
-            mActivity.drawDebugPlot(mDecoder.getInterOnsetDelays(), 2);
-            mActivity.drawDebugPlot(mDecoder.getUnitLenAvg(), 3);
-            mActivity.setDebugText("Settings CodeLen:" + mCodeLen + " StartCode " +
-                    Arrays.toString(mStartCode) + " StopCode " + Arrays.toString(mStopCode), 3);
+            mActivity.drawDebugScatter(mDecoder.getInterOnsetDelays(), mDecoder.getUnitLenAvg(), 2);
+            mActivity.setDebugText("Delays: " + Arrays.toString(mDecoder.getInterOnsetDelays()),2);
+            mActivity.setDebugText(msg, 3);
         }
 
         // Error Detection
@@ -122,7 +120,14 @@ public class AcousticBarcodeDecoder {
         if (vals != null && vals.length > 0) {
             double[] interestingData = Arrays.copyOfRange(data, vals[0] - VIZ_BUFFER,
                     vals[vals.length - 1] + VIZ_BUFFER);
-            mActivity.drawDebugPlot(interestingData, 1);
+
+            // Convert to double and same range
+            double[] valsD = new double[vals.length];
+            for(int i=0;i<vals.length;i++) {
+                valsD[i] = vals[i] - vals[0] + VIZ_BUFFER;
+            }
+
+            mActivity.drawDebugTransients(interestingData, valsD, 1);
         }
     }
 

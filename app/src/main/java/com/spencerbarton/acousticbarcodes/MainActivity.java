@@ -21,9 +21,14 @@ import com.spencerbarton.acousticbarcodes.Settings.SettingsActivity;
 import com.spencerbarton.acousticbarcodes.decoder.AcousticBarcodeDecoder;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.math3.stat.StatUtils;
+import org.apache.commons.math3.stat.descriptive.rank.Median;
+import org.apache.commons.math3.util.FastMath;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class MainActivity extends ActionBarActivity {
@@ -149,24 +154,50 @@ public class MainActivity extends ActionBarActivity {
     }
 
     // From http://android1plot.com/docs/a-simple-xy-plot/
-    public void drawDebugPlot(double[] data, int plotNum) {
+    public void drawDebugTransients(double[] rawData, double[] transLoc, int plotNum) {
 
-        XYPlot plot;
-        switch (plotNum) {
-            case 1:
-                plot = (XYPlot) findViewById(R.id.plot_1);
-                break;
-            case 2:
-                plot = (XYPlot) findViewById(R.id.plot_2);
-                break;
-            case 3:
-                plot = (XYPlot) findViewById(R.id.plot_3);
-                break;
-            default:
-                plot = (XYPlot) findViewById(R.id.plot_1);
-        }
-
+        XYPlot plot = pickPlot(plotNum);
         plot.clear();
+
+        addSeries(rawData, plot, false, Color.rgb(0, 200, 0));
+
+        Double[] doubleArray = ArrayUtils.toObject(transLoc);
+        List<Double> vals = Arrays.asList(doubleArray);
+        Double mean = StatUtils.mean(rawData);
+        List<Double> yVals = new ArrayList<>(Collections.nCopies(vals.size(), mean));
+        XYSeries series = new SimpleXYSeries(vals, yVals, "Debug");
+
+        // Create a formatter to use for drawing a series using LineAndPointRenderer:
+        LineAndPointFormatter seriesFormat = new LineAndPointFormatter(
+                null, // line color
+                Color.rgb(200, 0, 0), // point color
+                null,                                  // fill color (none)
+                null);                                 // text color
+
+        plot.addSeries(series, seriesFormat);
+
+        plot.setTicksPerRangeLabel(3);
+        plot.setRangeLowerBoundary(0, BoundaryMode.FIXED);
+
+        plot.redraw();
+    }
+
+    public void drawDebugScatter(double[] data1, double[] data2, int plotNum) {
+
+        XYPlot plot = pickPlot(plotNum);
+        plot.clear();
+
+        addSeries(data1, plot, true, Color.rgb(0, 200, 0));
+        addSeries(data2, plot, true, Color.rgb(200, 0, 0));
+
+        double top = 2*StatUtils.percentile(data1, 50);
+        plot.setRangeBoundaries(0, top, BoundaryMode.FIXED );
+        plot.setTicksPerRangeLabel(3);
+
+        plot.redraw();
+    }
+
+    private void addSeries(double[] data, XYPlot plot, boolean isPoints, Integer clr) {
 
         // Turn the above arrays into XYSeries':
         Double[] doubleArray = ArrayUtils.toObject(data);
@@ -178,17 +209,27 @@ public class MainActivity extends ActionBarActivity {
 
         // Create a formatter to use for drawing a series using LineAndPointRenderer:
         LineAndPointFormatter seriesFormat = new LineAndPointFormatter(
-                Color.rgb(0, 200, 0),                   // line color
-                null,                                   // point color
-                null,                                   // fill color (none)
-                null);                                   // text color
+                (isPoints) ? null : Color.rgb(0, 200, 0), // line color
+                (isPoints) ? clr : null, // point color
+                null,                                  // fill color (none)
+                null);                                 // text color
 
         // add a new series' to the xyplot:
         plot.addSeries(series, seriesFormat);
+    }
 
-        plot.setTicksPerRangeLabel(3);
-        plot.setRangeLowerBoundary(0, BoundaryMode.FIXED);
-
-        plot.redraw();
+    private XYPlot pickPlot(int plotNum) {
+        XYPlot plot;
+        switch (plotNum) {
+            case 1:
+                plot = (XYPlot) findViewById(R.id.plot_1);
+                break;
+            case 2:
+                plot = (XYPlot) findViewById(R.id.plot_2);
+                break;
+            default:
+                plot = (XYPlot) findViewById(R.id.plot_1);
+        }
+        return plot;
     }
 }

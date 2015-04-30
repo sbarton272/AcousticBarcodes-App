@@ -47,7 +47,7 @@
         android:layout_gravity="center_horizontal" />
 
     <ScrollView
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/scrollView" >
 
@@ -59,7 +59,7 @@
             <com.androidplot.xy.XYPlot
                 android:id="@+id/plot_1"
                 android:layout_width="fill_parent"
-                android:layout_height="100dp"
+                android:layout_height="200dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_gravity="center_horizontal" />
@@ -73,7 +73,7 @@
             <com.androidplot.xy.XYPlot
                 android:id="@+id/plot_2"
                 android:layout_width="fill_parent"
-                android:layout_height="100dp"
+                android:layout_height="200dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_gravity="center_horizontal" />
@@ -83,14 +83,6 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:id="@+id/text_2"/>
-
-            <com.androidplot.xy.XYPlot
-                android:id="@+id/plot_3"
-                android:layout_width="fill_parent"
-                android:layout_height="100dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_gravity="center_horizontal" />
 
             <TextView
                 android:layout_width="fill_parent"
