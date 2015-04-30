@@ -16,7 +16,7 @@ import org.apache.commons.math3.util.FastMath;
 public class TransientDetector {
     private static final String TAG = "TransientDetector";
 
-	private static final double PEAK_SCALE = 0.5;
+	private static final double PEAK_SCALE = 0.35;
 	private static final double THRESH_SCALE = 1.0;
 
     public int[] detect(double[] data) {
