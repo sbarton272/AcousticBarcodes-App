@@ -7,6 +7,7 @@ import android.util.Log;
 import com.musicg.wave.Wave;
 import com.spencerbarton.acousticbarcodes.MainActivity;
 import com.spencerbarton.acousticbarcodes.R;
+import com.spencerbarton.acousticbarcodes.Settings.AppParameters;
 
 import org.apache.commons.math3.stat.StatUtils;
 
@@ -38,8 +39,6 @@ public class AcousticBarcodeDecoder {
     // Consts
     private static final double ENCODING_UNIT_LEN_ONE = 1;
     private static final double ENCODING_UNIT_LEN_ZERO = 1.8;
-    private static final int FLT_LEN = 10;
-    private static final double FLT_SIGMA = 4;
     private static final int VIZ_BUFFER = 40;
 
     private final int[] mStartCode;
@@ -54,16 +53,16 @@ public class AcousticBarcodeDecoder {
     private final ErrorChecker mErrorChecker;
     private final MainActivity mActivity;
 
-    public AcousticBarcodeDecoder(MainActivity activity, int codeLen, int[] startBits, int[] stopBits) {
-        mCodeLen = codeLen;
-        mStartCode = startBits;
-        mStopCode = stopBits;
+    public AcousticBarcodeDecoder(MainActivity activity, AppParameters params) {
+        mCodeLen = params.getCodeLen();
+        mStartCode = params.getStartBits();
+        mStopCode = params.getStopBits();
         mActivity = activity;
-        mTransform = new Transform();
-        mFilter = new GaussianFilter(FLT_LEN, FLT_SIGMA);
+        mTransform = new Transform(params.getSpecFft(), params.getSpecOverlap(), params.getSpecLow());
+        mFilter = new GaussianFilter(params.getFltLen(), params.getFltSigma());
         mTransientDetector = new TransientDetector();
         mDecoder = new OnesDecoder(ENCODING_UNIT_LEN_ONE, ENCODING_UNIT_LEN_ZERO);
-        mErrorChecker = new ErrorChecker(codeLen, startBits, stopBits);
+        mErrorChecker = new ErrorChecker(params.getCodeLen(), params.getStartBits(), params.getStopBits());
     }
 
     public int[] decode(File file) {

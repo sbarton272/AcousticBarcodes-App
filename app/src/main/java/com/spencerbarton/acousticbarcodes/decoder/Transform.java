@@ -14,16 +14,22 @@ public class Transform {
 
     private static final String TAG = "Transform";
 
-    private static final int LOWEST_FREQ = 6;
-    private static final int FFT_SZ = 64;
-    private static final int OVERLAP_FACTOR = 32;
+    private int mLowestFreq = 6;
+    private int mFftSz = 64;
+    private int mOverlapSz = 32;
     private static final double MIN_SPEC_VAL = 0;
     private boolean mNormalize = false;
+
+    public Transform(int fftSz, int overlapFactor, int lowestFreq) {
+        mFftSz = fftSz;
+        mOverlapSz = overlapFactor;
+        mLowestFreq = lowestFreq;
+    }
 
     public double[] transform(Wave recording) {
 
         // Spectrogram
-        Spectrogram spectrogram = recording.getSpectrogram(FFT_SZ, OVERLAP_FACTOR);
+        Spectrogram spectrogram = recording.getSpectrogram(mFftSz, mOverlapSz);
         double[][] data = spectrogram.getAbsoluteSpectrogramData();
 
         double r = (double)data.length / recording.size();
@@ -31,11 +37,11 @@ public class Transform {
         
         // Normalize to unit normal in each freq
         if (mNormalize) {
-            data = normalizeSpec(data, LOWEST_FREQ);
+            data = normalizeSpec(data, mLowestFreq);
         }
 
         // Sum freq bins
-        double[] out = sumSpectrum(data, LOWEST_FREQ);
+        double[] out = sumSpectrum(data, mLowestFreq);
 
         return out;
     }

@@ -16,4 +16,12 @@
     <string name="pref_debug_plots_sum">Turn on plots for debugging</string>
     <string name="pref_debug_plots_default">false</string>
     <string name="pref_debug_plots">pref_debug_plots</string>
+    <string name="pref_code_len">pref_code_len</string>
+    <string name="pref_start_bits">pref_start_bits</string>
+    <string name="pref_stop_bits">pref_stop_bits</string>
+    <string name="pref_spec_low_freq">pref_spec_low_freq</string>
+    <string name="pref_spec_fft_sz">pref_spec_fft_sz</string>
+    <string name="pref_spec_overlap_factor">pref_spec_overlap_factor</string>
+    <string name="pref_flt_len">pref_flt_len</string>
+    <string name="pref_flt_sigma">pref_flt_sigma</string>
 </resources>

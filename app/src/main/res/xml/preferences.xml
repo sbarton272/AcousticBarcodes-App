@@ -18,24 +18,24 @@
         android:key="pref_alg_transient">
 
         <com.spencerbarton.acousticbarcodes.Settings.EditTextIntegerPreference
-            android:key="pref_code_len"
+            android:key="@string/pref_code_len"
             android:title="Code Length"
             android:summary="Set the code length excluding start and stop bits"
             android:defaultValue="3" />
 
         <ListPreference
-            android:key="pref_start_bits"
+            android:key="@string/pref_start_bits"
             android:title="Start Bits"
             android:summary="Choose the type of start bits in the encoding"
-            android:defaultValue="11"
+            android:defaultValue="1"
             android:entries="@array/start_bit_array"
             android:entryValues="@array/start_bit_array_values" />
 
         <ListPreference
-            android:key="pref_stop_bits"
+            android:key="@string/pref_stop_bits"
             android:title="Stop Bits"
             android:summary="Choose the type of stop bits in the encoding"
-            android:defaultValue="01"
+            android:defaultValue="2"
             android:entries="@array/start_bit_array"
             android:entryValues="@array/start_bit_array_values" />
 
@@ -45,23 +45,20 @@
         android:title="Algorithm Spectrogram Controls"
         android:key="pref_alg_spec">
 
-        private static final int LOWEST_FREQ = 6;
-        private static final int FFT_SZ = 64;
-        private static final int OVERLAP_FACTOR = 32;
         <com.spencerbarton.acousticbarcodes.Settings.EditTextIntegerPreference
-            android:key="pref_spec_low_freq"
+            android:key="@string/pref_spec_low_freq"
             android:title="Lowest Freq Bin"
             android:summary="Set the pass band for the spectrogram filtering."
             android:defaultValue="6" />
 
         <com.spencerbarton.acousticbarcodes.Settings.EditTextIntegerPreference
-            android:key="pref_spec_fft_sz"
+            android:key="@string/pref_spec_fft_sz"
             android:title="Spectrogram FFT Size"
             android:summary="Set the FFT size for the spectrogram."
             android:defaultValue="64" />
 
         <com.spencerbarton.acousticbarcodes.Settings.EditTextIntegerPreference
-            android:key="pref_spec_overlap_factor"
+            android:key="@string/pref_spec_overlap_factor"
             android:title="Spectrogram Overlap Factor"
             android:summary="Set the number of overlapped samples."
             android:defaultValue="32" />
@@ -73,13 +70,13 @@
         android:key="pref_alg_transient">
 
         <com.spencerbarton.acousticbarcodes.Settings.EditTextIntegerPreference
-            android:key="pref_flt_len"
+            android:key="@string/pref_flt_len"
             android:title="Gaussian Filter Length"
             android:summary="Set the Gaussian filter used before transient detection."
             android:defaultValue="10" />
 
         <com.spencerbarton.acousticbarcodes.Settings.EditTextIntegerPreference
-            android:key="pref_flt_sigma"
+            android:key="@string/pref_flt_sigma"
             android:title="Gaussian Filter Sigma"
             android:summary="Set the Gaussian filter used before transient detection."
             android:defaultValue="4" />
