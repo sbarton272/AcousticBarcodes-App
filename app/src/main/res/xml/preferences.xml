@@ -6,7 +6,7 @@
         android:key="pref_main_settings">
 
         <CheckBoxPreference
-            android:key="pref_debug_plots"
+            android:key="@string/pref_debug_plots"
             android:title="@string/pref_debug_plots_title"
             android:summary="@string/pref_debug_plots_sum"
             android:defaultValue="@string/pref_debug_plots_default" />

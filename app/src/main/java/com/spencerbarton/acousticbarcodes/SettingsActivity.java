@@ -8,8 +8,6 @@ import android.view.Menu;
 
 public class SettingsActivity extends ActionBarActivity {
 
-    public static final String KEY_PREF_SHOW_IMG = "pref_debug_plots";
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
