@@ -15,6 +15,7 @@ import com.androidplot.xy.LineAndPointFormatter;
 import com.androidplot.xy.SimpleXYSeries;
 import com.androidplot.xy.XYPlot;
 import com.androidplot.xy.XYSeries;
+import com.spencerbarton.acousticbarcodes.Settings.SettingsActivity;
 import com.spencerbarton.acousticbarcodes.decoder.AcousticBarcodeDecoder;
 
 import org.apache.commons.lang3.ArrayUtils;

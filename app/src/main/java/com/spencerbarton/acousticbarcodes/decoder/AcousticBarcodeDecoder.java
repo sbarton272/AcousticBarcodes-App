@@ -48,7 +48,7 @@ public class AcousticBarcodeDecoder {
 
     // Components
     private final Transform mTransform;
-    private final GaussianFilter mFilter = new GaussianFilter(FLT_LEN, FLT_SIGMA);
+    private final GaussianFilter mFilter;
     private final TransientDetector mTransientDetector;
     private final OnesDecoder mDecoder;
     private final ErrorChecker mErrorChecker;
@@ -60,6 +60,7 @@ public class AcousticBarcodeDecoder {
         mStopCode = stopBits;
         mActivity = activity;
         mTransform = new Transform();
+        mFilter = new GaussianFilter(FLT_LEN, FLT_SIGMA);
         mTransientDetector = new TransientDetector();
         mDecoder = new OnesDecoder(ENCODING_UNIT_LEN_ONE, ENCODING_UNIT_LEN_ZERO);
         mErrorChecker = new ErrorChecker(codeLen, startBits, stopBits);

@@ -1,10 +1,12 @@
-package com.spencerbarton.acousticbarcodes;
+package com.spencerbarton.acousticbarcodes.Settings;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
+
+import com.spencerbarton.acousticbarcodes.R;
 
 public class SettingsActivity extends ActionBarActivity {
 

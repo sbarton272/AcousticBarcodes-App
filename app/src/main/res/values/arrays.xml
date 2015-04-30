@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="start_bit_array">
+        <item>11</item>
+        <item>10</item>
+    </string-array>
+    <string-array name="start_bit_array_values">
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+</resources>
